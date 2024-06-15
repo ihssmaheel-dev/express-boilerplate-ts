@@ -26,8 +26,7 @@ transports.push(LogFileTransport);
 if (appConfig.env === 'dev') {
     const consoleTransport = new winston.transports.Console({
         format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.simple()
+            winston.format.timestamp(),
         )
     });
 
