@@ -42,6 +42,14 @@ class UserController {
         logger.info("user updated successfully");
         res.status(200).json(GenericResponse.success("User updated successfully"));
     });
+
+    deleteUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        logger.info(`deleting the user for id: ${req.params.id}...`);
+        await this.userService.deleteUser(req.params.id);
+
+        logger.info("user deleted successfully...");
+        res.status(200).json(GenericResponse.success("User deleted successfully"));
+    })
 }
 
 export default UserController;

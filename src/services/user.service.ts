@@ -18,7 +18,13 @@ class UserService {
     }
 
     async updateUser(id: string, userData: UserDocument) {
+        await this.getUser(id);
+
         return await User.findByIdAndUpdate(id, userData);
+    }
+
+    async deleteUser(id: string) {
+        return await User.findByIdAndDelete(id);
     }
 }
 
