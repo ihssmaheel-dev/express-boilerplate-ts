@@ -1,4 +1,4 @@
-interface GenericResponse<T> {
+interface GenericResponseType<T> {
     status: boolean;
     message?: string;
     timestamp: number;
@@ -6,37 +6,35 @@ interface GenericResponse<T> {
     errors: { [key: string]: string };
 }
 
-function createGenericResponse<T>(status: boolean, message?: string, data?: T, errors: { [key: string]: string } = {}): GenericResponse<T> {
-    return {
-        status,
-        message,
-        timestamp: Date.now(),
-        data,
-        errors,
-    };
+class GenericResponse {
+    static createGenericResponse<T>(status: boolean, message?: string, data?: T, errors: { [key: string]: string } = {}): GenericResponseType<T> {
+        return {
+            status,
+            message,
+            timestamp: Date.now(),
+            data,
+            errors,
+        };
+    }
+    static success<T>(message: string): GenericResponseType<T> {
+        return GenericResponse.createGenericResponse<T>(true, message);
+    }
+
+    static successWithData<T>(data: T): GenericResponseType<T> {
+        return GenericResponse.createGenericResponse<T>(true, "Response Success", data);
+    }
+
+    static successWithDataMsg<T>(data: T, message: string): GenericResponseType<T> {
+        return GenericResponse.createGenericResponse<T>(true, message, data);
+    }
+
+    static error<T>(message: string): GenericResponseType<T> {
+        return GenericResponse.createGenericResponse<T>(false, message);
+    }
+
+    static fieldError<T>(message: string, errors: { [key: string]: string }): GenericResponseType<T> {
+        return GenericResponse.createGenericResponse<T>(false, message, undefined, errors);
+    }
 }
 
-function successResponse<T>(message: string): GenericResponse<T> {
-    return createGenericResponse<T>(true, message);
-}
-
-function successResponseWithData<T>(data: T): GenericResponse<T> {
-    return createGenericResponse<T>(true, "Response Success", data);
-}
-
-function errorResponse<T>(message: string): GenericResponse<T> {
-    return createGenericResponse<T>(false, message);
-}
-
-function fieldErrorResponse<T>(message: string, errors: { [key: string]: string }): GenericResponse<T> {
-    return createGenericResponse<T>(false, message, undefined, errors);
-}
-
-export {
-    GenericResponse,
-    createGenericResponse,
-    successResponse,
-    successResponseWithData,
-    errorResponse,
-    fieldErrorResponse,
-};
+export default GenericResponse;
