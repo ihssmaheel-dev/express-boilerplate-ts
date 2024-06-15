@@ -2,7 +2,7 @@ import {  Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
 import logger from "../logger/logger";
 import UserService from '../services/user.service';
-import { GenericResponse, successResponse, successResponseWithData } from "../utils/genericResponse";
+import { successResponseWithData } from "../utils/genericResponse";
 
 class UserController {
     private userService: UserService;
