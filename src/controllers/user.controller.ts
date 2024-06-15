@@ -26,6 +26,14 @@ class UserController {
         logger.info("user fetched successfully");
         res.status(200).json(GenericResponse.successWithData(user));
     });
+
+    createUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        logger.info("creating new user...");
+        const user = await this.userService.createUser(req.body);
+
+        logger.info("user created successfully");
+        res.status(200).json(GenericResponse.successWithDataMsg(user, "User created successfully"));
+    });
 }
 
 export default UserController;
