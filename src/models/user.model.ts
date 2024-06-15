@@ -6,9 +6,6 @@ export interface UserDocument extends Document {
     email: string;
     password: string;
     profilePicture?: string;
-    isAdmin: boolean;
-    hasAccess: boolean;
-    isSubscribed: boolean;
 }
 
 // interface for user mongoose model (static methods)
@@ -38,18 +35,6 @@ const UserSchema = new mongoose.Schema<UserDocument, UserModel>(
         },
         profilePicture: {
             type: String
-        },
-        isAdmin: {
-            type: Boolean,
-            default: false
-        },
-        hasAccess: {
-            type: Boolean,
-            default: true
-        },
-        isSubscribed: {
-            type: Boolean,
-            default: true
         }
     },
     { timestamps: true }
