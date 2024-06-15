@@ -46,6 +46,10 @@ interface MailConfig {
     from: string;
 }
 
+interface HashingConfig {
+    hashing_key : string;
+}
+
 export const dbConfig: DBConfig = {
     url: DB_URI,
 };
@@ -72,3 +76,7 @@ export const mailConfig: MailConfig = {
     },
     from: getEnv("MAIL_FROM_ADDRESS"),
 };
+
+export const hashingConfig: HashingConfig = {
+    hashing_key: getEnv("HASHING_KEY")
+}
