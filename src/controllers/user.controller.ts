@@ -32,7 +32,15 @@ class UserController {
         const user = await this.userService.createUser(req.body);
 
         logger.info("user created successfully");
-        res.status(200).json(GenericResponse.successWithDataMsg(user, "User created successfully"));
+        res.status(200).json(GenericResponse.success("User created successfully"));
+    });
+
+    updateUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        logger.info(`updating user for id: ${req.params.id}...`);
+        await this.userService.updateUser(req.params.id, req.body);
+
+        logger.info("user updated successfully");
+        res.status(200).json(GenericResponse.success("User updated successfully"));
     });
 }
 

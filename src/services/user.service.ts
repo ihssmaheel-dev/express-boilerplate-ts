@@ -4,7 +4,7 @@ import CustomError from "../utils/customError";
 class UserService {
     async getUsers() {
         return await User.find();
-        }
+    }
 
     async getUser(id: string) {
         const user = await User.findById(id);
@@ -12,9 +12,13 @@ class UserService {
         
         return user;
     }
-        
+
     async createUser(userData: UserDocument) {
         return await User.create(userData);
+    }
+
+    async updateUser(id: string, userData: UserDocument) {
+        return await User.findByIdAndUpdate(id, userData);
     }
 }
 
