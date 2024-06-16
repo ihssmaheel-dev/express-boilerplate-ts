@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { Request } from 'express';
 import { FileArray, UploadedFile } from 'express-fileupload';
 import logger from '../logger/logger';
 
