@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Request } from 'express';
-import { UploadedFile } from 'express-fileupload';
+import { FileArray, UploadedFile } from 'express-fileupload';
 import logger from '../logger/logger';
 
 class FileHandleService {
@@ -25,34 +25,36 @@ class FileHandleService {
         return { fileName, filePath };
     }
 
-    async uploadSingleFile(req: Request, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; }> {
+    async uploadSingleFile(uploadedFile: FileArray | undefined | null, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; }> {
         const destination = this.getDestination(folderName);
 
-        if (req.files && req.files[fieldName]) {
-            const file = req.files[fieldName] as UploadedFile;
+        if (uploadedFile && uploadedFile[fieldName]) {
+            const file = uploadedFile[fieldName] as UploadedFile;
+
             return this.saveFile(file, destination);
         }
         
         throw new Error('No files were uploaded.');
     }
 
-    async uploadMultiFiles(req: Request, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; }[]> {
+    async uploadMultipleFiles(files: FileArray | undefined | null, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; }[]> {
         const destination = this.getDestination(folderName);
-        const files: { fileName: string; filePath: string; }[] = [];
-
-        if (req.files && req.files[fieldName]) {
-            const uploadedFiles = Array.isArray(req.files[fieldName]) ? req.files[fieldName] : [req.files[fieldName]];
-
-            for (const file of uploadedFiles) {
+        const storedFiles: { fileName: string; filePath: string; }[] = [];
+    
+        if (files && files[fieldName]) {
+            const fileList = Array.isArray(files[fieldName]) ? files[fieldName] : [files[fieldName]];
+    
+            for (const file of fileList) {
                 const savedFile = await this.saveFile(file, destination);
-                files.push(savedFile);
+                storedFiles.push(savedFile);
             }
-
-            return files;
+    
+            return storedFiles;
         }
         
         throw new Error('No files were uploaded.');
     }
+    
 
     async removeFile(folderName: string, fileNames: string | string[]): Promise<void> {
         const destination = this.getDestination(folderName);
