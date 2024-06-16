@@ -1,42 +1,54 @@
 import fs from 'fs';
 import path from 'path';
-import logger from '../logger/logger';
 import { Request } from 'express';
+import { UploadedFile } from 'express-fileupload';
+import logger from '../logger/logger';
 
 class FileHandleService {
-    getDestination(folderName: string): string {
+    private getDestination(folderName: string): string {
         const destination = path.join('uploads', folderName);
         if (!fs.existsSync(destination)) {
             fs.mkdirSync(destination, { recursive: true });
         }
-
         return destination;
     }
 
-    async uploadFile(req: Request, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; } | { fileName: string; filePath: string; }[]> {
+    private async saveFile(file: UploadedFile, destination: string): Promise<{ fileName: string; filePath: string; }> {
+        const { name, data } = file;
+        const ext = path.extname(name);
+        const fileName = `${Date.now()}${ext}`;
+        const filePath = path.resolve(destination, fileName);
+
+        // Write file to destination
+        await fs.promises.writeFile(filePath, data);
+
+        return { fileName, filePath };
+    }
+
+    async uploadSingleFile(req: Request, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; }> {
+        const destination = this.getDestination(folderName);
+
+        if (req.files && req.files[fieldName]) {
+            const file = req.files[fieldName] as UploadedFile;
+            return this.saveFile(file, destination);
+        }
+        
+        throw new Error('No files were uploaded.');
+    }
+
+    async uploadMultiFiles(req: Request, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; }[]> {
         const destination = this.getDestination(folderName);
         const files: { fileName: string; filePath: string; }[] = [];
 
-        if (req.files) {
+        if (req.files && req.files[fieldName]) {
             const uploadedFiles = Array.isArray(req.files[fieldName]) ? req.files[fieldName] : [req.files[fieldName]];
 
             for (const file of uploadedFiles) {
-                const { name, data } = file;
-                const ext = path.extname(name);
-                const fileName = `${Date.now()}${ext}`;
-
-                const filePath = path.resolve(destination, fileName);
-
-                // Write file to destination
-                await fs.promises.writeFile(filePath, data);
-
-                files.push({
-                    fileName: fileName,
-                    filePath: filePath
-                });
+                const savedFile = await this.saveFile(file, destination);
+                files.push(savedFile);
             }
 
-            return files.length === 1 ? files[0] : files;
+            return files;
         }
         
         throw new Error('No files were uploaded.');
