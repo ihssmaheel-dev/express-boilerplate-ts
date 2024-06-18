@@ -4,6 +4,7 @@ import fileUpload from "express-fileupload";
 import errorHandler from "./middlewares/errorHandler";
 import userRoutes from "./routes/user.routes";
 import hashingRoutes from "./routes/hashing.routes";
+import addFilesToBody from "./middlewares/attachFilesToBody";
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.use(express.json());
 app.use(cors()); // Enable cors for all routes
 
 app.use(fileUpload());
+
+app.use(addFilesToBody);
 
 // Routes
 app.use("/v1/user", userRoutes);
