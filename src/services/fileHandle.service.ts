@@ -24,24 +24,22 @@ class FileHandleService {
         return { fileName, filePath };
     }
 
-    async uploadSingleFile(uploadedFile: FileArray | undefined | null, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; }> {
+    async uploadSingleFile(uploadedFile: UploadedFile, folderName: string): Promise<{ fileName: string; filePath: string; }> {
         const destination = this.getDestination(folderName);
 
-        if (uploadedFile && uploadedFile[fieldName]) {
-            const file = uploadedFile[fieldName] as UploadedFile;
-
-            return this.saveFile(file, destination);
+        if (uploadedFile) {
+            return this.saveFile(uploadedFile, destination);
         }
         
         throw new Error('No files were uploaded.');
     }
 
-    async uploadMultipleFiles(files: FileArray | undefined | null, fieldName: string, folderName: string): Promise<{ fileName: string; filePath: string; }[]> {
+    async uploadMultipleFiles(uploadedFiles: UploadedFile, folderName: string): Promise<{ fileName: string; filePath: string; }[]> {
         const destination = this.getDestination(folderName);
         const storedFiles: { fileName: string; filePath: string; }[] = [];
     
-        if (files && files[fieldName]) {
-            const fileList = Array.isArray(files[fieldName]) ? files[fieldName] : [files[fieldName]];
+        if (uploadedFiles) {
+            const fileList = Array.isArray(uploadedFiles) ? uploadedFiles : [uploadedFiles];
     
             for (const file of fileList) {
                 const savedFile = await this.saveFile(file, destination);
