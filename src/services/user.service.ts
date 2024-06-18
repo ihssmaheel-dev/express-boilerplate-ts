@@ -1,3 +1,4 @@
+import { UploadedFile } from "express-fileupload";
 import User, { UserDocument } from "../models/user.model";
 import CustomError from "../utils/customError";
 import fileHandleService from "./fileHandle.service";
@@ -28,7 +29,7 @@ class UserService {
         return await User.findByIdAndDelete(id);
     }
 
-    async updateProfilePicture(id: string, userData: any) {
+    async updateProfilePicture(id: string, userData: { profile_picture: UploadedFile }) {
         const user = await this.getUser(id);
 
         const existingProfilePicture = user.profilePicture;
