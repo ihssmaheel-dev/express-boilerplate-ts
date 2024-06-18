@@ -1,5 +1,6 @@
 import User, { UserDocument } from "../models/user.model";
 import CustomError from "../utils/customError";
+import fileHandleService from "./fileHandle.service";
 
 class UserService {
     async getUsers() {
@@ -25,6 +26,21 @@ class UserService {
 
     async deleteUser(id: string) {
         return await User.findByIdAndDelete(id);
+    }
+
+    async updateProfilePicture(id: string, userData: any) {
+        const user = await this.getUser(id);
+
+        const existingProfilePicture = user.profilePicture;
+        const file = await fileHandleService.uploadSingleFile(userData.profile_picture, "profiles");
+        
+        user.set({ profilePicture: file.fileName });
+
+        if(existingProfilePicture) {
+            fileHandleService.removeFile("profiles", existingProfilePicture)
+        };
+
+        return await user.save();
     }
 }
 

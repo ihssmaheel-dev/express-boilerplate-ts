@@ -47,9 +47,17 @@ class UserController {
         logger.info(`deleting the user for id: ${req.params.id}...`);
         await this.userService.deleteUser(req.params.id);
 
-        logger.info("user deleted successfully...");
+        logger.info("user deleted successfully");
         res.status(200).json(GenericResponse.success("User deleted successfully"));
-    })
+    });
+
+    updateProfilePicture = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        logger.info(`updating profile picture of the user for id: ${req.params.id}`);
+        await this.userService.updateProfilePicture(req.params.id, req.body);
+
+        logger.info("profile picture updates successfully");
+        res.status(200).json(GenericResponse.success("Profile picture updated successfully"));
+    });
 }
 
 export default UserController;
