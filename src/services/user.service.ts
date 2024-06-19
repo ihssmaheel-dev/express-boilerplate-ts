@@ -29,13 +29,12 @@ class UserService {
         return await User.findByIdAndDelete(id);
     }
 
-    async updateProfilePicture(id: string, userData: { profile_picture: UploadedFile }) {
+    async updateProfilePicture(id: string, { profile_picture } : { profile_picture: UploadedFile }) {
         const user = await this.getUser(id);
-
         const existingProfilePicture = user.profilePicture;
-        const file = await fileHandleService.uploadSingleFile(userData.profile_picture, "profiles");
-        
-        user.set({ profilePicture: file.fileName });
+
+        const { fileName } = await fileHandleService.uploadSingleFile(profile_picture, "profiles");
+        user.profilePicture = fileName;
 
         if(existingProfilePicture) {
             fileHandleService.removeFile("profiles", existingProfilePicture)
