@@ -2,7 +2,7 @@ import {  Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
 import logger from "../logger/logger";
 import UserService from '../services/user.service';
-import GenericResponse from "../utils/genericResponse";
+import { SuccessResponse } from '../utils/genericResponse';
 
 class UserController {
     private userService: UserService;
@@ -16,7 +16,7 @@ class UserController {
         const users = await this.userService.getUsers();
 
         logger.info("users fetched successfully");
-        res.status(200).json(GenericResponse.successWithData(users));
+        res.status(200).json(SuccessResponse(users));
     });
 
     getUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -24,7 +24,7 @@ class UserController {
         const user = await this.userService.getUser(req.params.id);
 
         logger.info("user fetched successfully");
-        res.status(200).json(GenericResponse.successWithData(user));
+        res.status(200).json(SuccessResponse(user));
     });
 
     createUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -32,7 +32,7 @@ class UserController {
         const user = await this.userService.createUser(req.body);
 
         logger.info("user created successfully");
-        res.status(200).json(GenericResponse.success("User created successfully"));
+        res.status(200).json(SuccessResponse("User created successfully"));
     });
 
     updateUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ class UserController {
         await this.userService.updateUser(req.params.id, req.body);
 
         logger.info("user updated successfully");
-        res.status(200).json(GenericResponse.success("User updated successfully"));
+        res.status(200).json(SuccessResponse("User updated successfully"));
     });
 
     deleteUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -48,7 +48,7 @@ class UserController {
         await this.userService.deleteUser(req.params.id);
 
         logger.info("user deleted successfully");
-        res.status(200).json(GenericResponse.success("User deleted successfully"));
+        res.status(200).json(SuccessResponse("User deleted successfully"));
     });
 
     updateProfilePicture = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -56,7 +56,7 @@ class UserController {
         await this.userService.updateProfilePicture(req.params.id, req.body);
 
         logger.info("profile picture updates successfully");
-        res.status(200).json(GenericResponse.success("Profile picture updated successfully"));
+        res.status(200).json(SuccessResponse("Profile picture updated successfully"));
     });
 }
 
