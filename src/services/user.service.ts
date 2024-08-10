@@ -26,7 +26,13 @@ class UserService {
     }
 
     async deleteUser(id: string) {
-        return await User.findByIdAndDelete(id);
+        const result = await User.deleteOne({ _id: id });
+
+        if (result.deletedCount === 0) {
+            throw new CustomError(404, 'User not found');
+        }
+
+        return result;
     }
 
     async updateProfilePicture(id: string, { profile_picture } : { profile_picture: UploadedFile }) {
