@@ -7,7 +7,12 @@ interface GenericResponseType<T> {
 }
 
 class GenericResponse {
-    static createGenericResponse<T>(status: boolean, message?: string, data?: T, errors: { [key: string]: string } = {}): GenericResponseType<T> {
+    static createResponse<T>(
+        status: boolean,
+        message: string = '',
+        data?: T,
+        errors: { [key: string]: string } = {}
+    ): GenericResponseType<T> {
         return {
             status,
             message,
@@ -16,25 +21,17 @@ class GenericResponse {
             errors,
         };
     }
-    static success<T>(message: string): GenericResponseType<T> {
-        return GenericResponse.createGenericResponse<T>(true, message);
-    }
-
-    static successWithData<T>(data: T): GenericResponseType<T> {
-        return GenericResponse.createGenericResponse<T>(true, "Response Success", data);
-    }
-
-    static successWithDataMsg<T>(data: T, message: string): GenericResponseType<T> {
-        return GenericResponse.createGenericResponse<T>(true, message, data);
-    }
-
-    static error<T>(message: string): GenericResponseType<T> {
-        return GenericResponse.createGenericResponse<T>(false, message);
-    }
-
-    static fieldError<T>(message: string, errors: { [key: string]: string }): GenericResponseType<T> {
-        return GenericResponse.createGenericResponse<T>(false, message, undefined, errors);
-    }
 }
+
+export const SuccessResponse = <T>(dataOrMessage?: T | string, message: string = 'Response Success'): GenericResponseType<T> => {
+    if (typeof dataOrMessage === 'string') {
+        return GenericResponse.createResponse<T>(true, dataOrMessage, undefined as any);
+    }
+    return GenericResponse.createResponse(true, message || 'Response Success', dataOrMessage);
+};
+
+export const ErrorResponse = <T>(message: string, errors: { [key: string]: string } = {}): GenericResponseType<T> => {
+    return GenericResponse.createResponse<T>(false, message, undefined, errors);
+};
 
 export default GenericResponse;
