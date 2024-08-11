@@ -3,6 +3,9 @@ import logger from "../config/logger/logger";
 import CustomError from "../utils/customError";
 import { ErrorResponse } from "../utils/genericResponse";
 import { MongoServerError } from "mongodb";
+import { appConfig } from "../config/config";
+
+const isDev = process.env.APP_ENV === 'dev';
 
 // Function to format duplicate key errors from MongoDB
 const formatDuplicateKeyError = (error: MongoServerError): { [key: string]: string } => {
@@ -15,23 +18,23 @@ const classifyError = (error: Error | any): { statusCode: number, message: strin
     if (error instanceof CustomError) {
         return {
             statusCode: error.statusCode,
-            message: "Operational Error",
+            message: "OPERATIONAL ERROR",
             errors: { general: error.message }
         };
     }
 
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return {
-            statusCode: 409, // Conflict for duplicate key errors
-            message: "Validation Error",
+            statusCode: 409,
+            message: "VALIDATION ERROR",
             errors: formatDuplicateKeyError(error)
         };
     }
 
     return {
-        statusCode: 500, // Internal Server Error for unexpected issues
-        message: "Error",
-        errors: { general: "Something went wrong" }
+        statusCode: 500,
+        message: "FATAL ERROR",
+        errors: isDev ? { general: error.message } : { general: "Something went wrong" }
     };
 };
 
@@ -41,7 +44,14 @@ const errorHandler = (error: Error | any, req: Request, res: Response, next: Nex
 
     const { statusCode, message, errors } = classifyError(error);
 
-    res.status(statusCode).json(ErrorResponse(message, errors));
+    // Check the environment and adjust the response accordingly
+    if (appConfig.env === 'dev') {
+        console.log("hello");
+        
+        res.status(statusCode).json(ErrorResponse(message, errors));
+    } else {
+        res.status(statusCode).json(ErrorResponse("Something went wrong"));
+    }
 };
 
 export default errorHandler;
