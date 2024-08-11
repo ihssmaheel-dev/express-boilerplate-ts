@@ -1,7 +1,7 @@
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import fs from 'fs';
-import { appConfig } from '../config/config';
+import { appConfig } from '../config';
 
 // Define the path to the logs directory
 const logsDir: string = 'logs';

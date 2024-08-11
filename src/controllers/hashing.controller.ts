@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import logger from '../logger/logger';
+import logger from '../config/logger/logger';
 import AESGCM from '../services/hashing.service';
 import { SuccessResponse } from '../utils/genericResponse';
 

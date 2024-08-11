@@ -1,7 +1,7 @@
 import app from "./app";
 import { appConfig } from "./config/config";
-import connectDB from "./db/dbConnection";
-import logger from "./logger/logger";
+import connectDB from "./config/db/dbConnection";
+import logger from "./config/logger/logger";
 
 (async () : Promise<void> => {
     try {

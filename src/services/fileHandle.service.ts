@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { FileArray, UploadedFile } from 'express-fileupload';
-import logger from '../logger/logger';
+import logger from '../config/logger/logger';
 
 class FileHandleService {
     private getDestination(folderName: string): string {
