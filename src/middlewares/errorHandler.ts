@@ -46,8 +46,6 @@ const errorHandler = (error: Error | any, req: Request, res: Response, next: Nex
 
     // Check the environment and adjust the response accordingly
     if (appConfig.env === 'dev') {
-        console.log("hello");
-        
         res.status(statusCode).json(ErrorResponse(message, errors));
     } else {
         res.status(statusCode).json(ErrorResponse("Something went wrong"));
